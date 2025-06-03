@@ -1,0 +1,38 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: taskiteasy-app
+    networks:
+      - devops-network
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/
+    depends_on:
+      - db
+
+
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    networks:
+      - devops-network
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: mysecretpassword
+      MYSQL_DATABASE: taskiteasy
+      MYSQL_USER: taskiteasy
+      MYSQL_PASSWORD: taskiteasy
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+networks:
+  devops-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+
