@@ -3,7 +3,11 @@ FROM php:8.3-apache
 # Install system packages
 RUN apt-get update && apt-get install -y \
     libzip-dev unzip git curl gnupg2 \
-    && docker-php-ext-install pdo pdo_mysql zip \
+    # IMPORTANT CHANGE: Install libpq-dev for PostgreSQL, and then pdo_pgsql extension
+    libpq-dev \
+    && docker-php-ext-install pdo zip \
+    # Add pdo_pgsql instead of pdo_mysql or alongside it if you need both
+    && docker-php-ext-install pdo_pgsql \
     && apt-get clean
 
 # Install Composer
