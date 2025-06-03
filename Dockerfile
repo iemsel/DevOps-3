@@ -1,42 +1,42 @@
-FROM php:8.2-apache
+FROM php:8.3-apache
 
-# Install PHP extensions and system dependencies
+# Install system packages
 RUN apt-get update && apt-get install -y \
-    libzip-dev unzip git curl gnupg2 ca-certificates \
+    libzip-dev unzip git curl gnupg2 \
     && docker-php-ext-install pdo pdo_mysql zip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && apt-get clean
 
-# Install Composer globally
-RUN curl -sS https://getcomposer.org/installer | php -- \
-    && mv composer.phar /usr/local/bin/composer
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install Node.js 18 and npm
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get update && apt-get install -y nodejs
-
-# Set working directory
+# Install Node.js (18.x)
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
 WORKDIR /var/www/
 
-# Copy only Composer files first (for better Docker caching)
+# Copy minimum files for composer install, including app/
 COPY composer.json composer.lock ./
+COPY artisan ./
+COPY bootstrap/ ./bootstrap/
+COPY config/ ./config/
+COPY routes/ ./routes/
+COPY app/ ./app/
 
-# Install PHP dependencies without dev packages
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Copy rest of the application (includes artisan)
+# Copy the rest of the project
 COPY . .
 
-# Install Node packages and build assets
+# Build frontend assets
 RUN npm ci && npm run build
 
-# Enable Apache mod_rewrite
+# Configure Apache
+COPY laravel.conf /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
 
-# Copy custom Apache config
-COPY laravel.conf /etc/apache2/sites-available/000-default.conf
+# Set correct permissions
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Set correct permissions for Laravel
-RUN chown -R www-data:www-data storage bootstrap/cache
-
-# Expose web server port
+# Expose port
 EXPOSE 80
