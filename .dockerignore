@@ -1,0 +1,29 @@
+# Ignore node dependencies
+node_modules/
+
+# Ignore Composer dependencies (they will be installed in the image)
+vendor/
+
+# Ignore local environment files
+.env
+.env.*
+
+# Ignore version control
+.git
+.gitignore
+
+# Ignore build artifacts
+npm-debug.log
+yarn-error.log
+composer.lock~*
+composer.phar
+
+# IDE/editor stuff
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS-specific files
+.DS_Store
+Thumbs.db
