@@ -23,8 +23,7 @@ COPY config/ ./config/
 COPY routes/ ./routes/
 COPY app/ ./app/
 # IMPORTANT: Copy database folder for migrations/seeds
-COPY database/ ./database/ # <-- Move this comment to its own line, or remove it
-
+COPY database/ ./database/
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
