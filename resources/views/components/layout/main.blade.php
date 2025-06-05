@@ -42,8 +42,11 @@
     @auth
         <form method="POST" action="{{ route('logout') }}" class="ml-auto">
             @csrf
-            <button class="button is-danger is-light ml-4" type="submit">
-                <i class="fa-solid fa-right-from-bracket mr-1"></i> Log Out
+            <button type="submit" class="navbar-item button is-black has-text-white">
+                <span class="icon">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                </span>
+                <span>Logout</span>
             </button>
         </form>
     @endauth
