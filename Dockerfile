@@ -22,7 +22,8 @@ COPY bootstrap/ ./bootstrap/
 COPY config/ ./config/
 COPY routes/ ./routes/
 COPY app/ ./app/
-COPY database/ ./database/ # <-- IMPORTANT: Copy database folder for migrations/seeds
+# IMPORTANT: Copy database folder for migrations/seeds
+COPY database/ ./database/ # <-- Move this comment to its own line, or remove it
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
