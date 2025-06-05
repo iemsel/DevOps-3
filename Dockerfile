@@ -62,6 +62,8 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 # Expose port
 EXPOSE 80
 
-# Define the command to run when the container starts
-# This will now just start Apache, as migrations/seeds are done during build
+# Clear Laravel's configuration cache to ensure it picks up fresh env vars
+RUN php artisan config:clear
+RUN php artisan cache:clear # Also good to clear general cache
+
 CMD ["apache2-foreground"]
