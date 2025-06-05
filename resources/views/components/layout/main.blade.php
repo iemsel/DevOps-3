@@ -38,50 +38,16 @@
     @foreach($navItems as $navItem)
         <x-ui.navbar-item :route="$navItem['route']">{{ $navItem['title'] }}</x-ui.navbar-item>
     @endforeach
+
+    @auth
+        <form method="POST" action="{{ route('logout') }}" class="ml-auto">
+            @csrf
+            <button class="button is-danger is-light ml-4" type="submit">
+                <i class="fa-solid fa-right-from-bracket mr-1"></i> Log Out
+            </button>
+        </form>
+    @endauth
 </x-ui.navbar>
-
-{{-- Content --}}
-<section class="section">
-    <div class="container">
-        {{-- a very basic 'backwards' navigation --}}
-        <a class="button is-primary mb-3" href="{{ url()->previous() }}">Back</a>
-        <x-ui.notifications></x-ui.notifications>
-        {{ $slot }}
-    </div>
-</section>
-
-{{-- Footer --}}
-<footer class="footer">
-    <div class="container">
-        <div class="columns is-multiline">
-
-            <div class="column has-text-centered">
-                <div>
-                    <a href="/" class="link">Home</a>
-                </div>
-            </div>
-
-            <div class="column has-text-centered">
-                <div>
-                    <a href="https://opensource.org/licenses/MIT" class="link">
-                        <i class="fa fa-balance-scale" aria-hidden="true"></i> License: MIT
-                    </a>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="content is-small has-text-centered">
-            <p class="">Theme built by <a href="https://www.csrhymes.com">C.S. Rhymes</a> | adapted by <a href="https://github.com/dwaard">BugSlayer</a></p>
-            <p>TaskITEasy</p>
-        </div>
-    </div>
-</footer>
-{{-- Render additional scripts from subviews and/or components --}}
-@stack('scripts')
-</body>
-</html>
-
 
 {{-- Content --}}
 <section class="section">
