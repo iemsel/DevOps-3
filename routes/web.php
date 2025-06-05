@@ -16,7 +16,7 @@ Route::get('/', function () {
 // Everything else should be protected
 Route::middleware(['auth', 'verified'])->group(function () {
     // The about/dashboard page
-    Route::view('/about', 'about')->name('dashboard');
+    Route::view('/about', 'about')->name('about');
 
     // Home route
     Route::get('/home', [TaskController::class, 'index'])->name('home');
