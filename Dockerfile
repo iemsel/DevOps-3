@@ -22,8 +22,9 @@ COPY bootstrap/ ./bootstrap/
 COPY config/ ./config/
 COPY routes/ ./routes/
 COPY app/ ./app/
-# IMPORTANT: Copy database folder for migrations/seeds
+# IMPORTANT: Copy database folder for migrations/seeds (comment moved to its own line)
 COPY database/ ./database/
+
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
@@ -33,26 +34,29 @@ COPY . .
 # Build frontend assets
 RUN npm ci && npm run build
 
-# --- NEW ADDITIONS FOR MIGRATIONS AND SEEDS ---
+# --- ADDITIONS FOR MIGRATIONS AND SEEDS DURING BUILD ---
 # Ensure storage permissions are set before migrations
-# This might already be handled by your chown later, but good to ensure here if needed
+# Laravel needs to write to these directories for cache and sessions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 # Run database migrations
-# Use --force for non-interactive execution
+# Use --force for non-interactive execution during Docker build
 RUN php artisan migrate --force
 
-# Run database seeders (CAUTION: Only for development/testing or initial data)
-# If you only want specific seeders, you can specify them:
+# Run database seeders (CAUTION: Only for development/testing or initial production data)
+# This will run your DatabaseSeeder.php
+# If you only want specific seeders, uncomment and modify the line below:
 # RUN php artisan db:seed --class=UserSeeder --force
 RUN php artisan db:seed --force
-# --- END NEW ADDITIONS ---
+# --- END ADDITIONS ---
 
 # Configure Apache
 COPY laravel.conf /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
 
-# Set correct permissions (already done above for migrations, but good to keep if you have other permission needs)
+# Set correct permissions (redundant if done above, but harmless to keep if other parts rely on it)
+# The chown above specifically targets storage and cache before migrations.
+# This one might be for other parts of /var/www if needed.
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 # Expose port
